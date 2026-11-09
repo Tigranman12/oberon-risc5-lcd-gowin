@@ -212,9 +212,21 @@ was made in.)
 | `Sierpinski.Draw` | a Sierpinski curve |
 | `Checkers.Open` | a checkerboard |
 | `Stars.Open` then `Stars.Run` | moving stars; `Stars.Stop` stops them |
+| `System.Close` | closes the lowest viewer of the left track (see below) |
 
-Each drawing opens a viewer in the left track; the track is shared, so later viewers are smaller. Viewers cannot
-be closed from the serial line: `o` again (after S1 or A6) starts with a clean screen.
+Each drawing opens a viewer in the left track; the track is shared, so later viewers are smaller.
+`System.Close` closes the viewer under Oberon's pointer, which stays in the bottom-left corner (there is no
+mouse): so each `System.Close` closes the lowest viewer of the left track; System.Log and System.Tool on the
+right are not touched, and an extra `System.Close` on an empty track does nothing. To clear the screen and draw
+one full-size curve:
+
+```
+Stars.Stop                 (if the stars run)
+System.Close               (once per viewer on the left)
+Hilbert.Draw
+```
+
+Or press S1, Enter, `o`: Oberon starts again with a clean screen (the files on the card stay).
 
 **Power-cycle test.** After `ORP.Compile Hello.Mod/s`, unplug and plug the board, program it again (A6), `o`,
 and type `Hello.Run` without compiling: it runs, because Hello.rsc was saved on the SD card.

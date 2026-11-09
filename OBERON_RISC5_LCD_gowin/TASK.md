@@ -39,12 +39,17 @@
   'lcd ok', the picture now right with the cable on top (user: "it 180 changed"). Monitor o (PuTTY), then
   ORP.Compile Hello.Mod/s, Hello.Run: the panel (photo docs/l2_board_oberon.jpg) shows Oberon's screen as the
   emulator's: user track empty with the arrow, System.Log with Oberon V5, OR Compiler, compiling Hello 67 40
-  C43B, Hello's line; System.Tool. Waiting for: run_rf.sh at this commit (49/49) -> tags lcd-l1-pass, lcd-l2-pass.
+  C43B, Hello's line; System.Tool.
+  Sim logs/20261109-215355-lcd_sim at 518a9ac (L1 + L1r + L2; RTL and monitor as built): tb_mon RESULT 49/49,
+  TB PASS, PSRAM TB 6/6, exit 0. (The run before, logs/20261109-211954-lcd_sim at d8f6384, failed 48/49 only because
+  the agent rewrote build/core_sum.hex during the run; its 7 L1 checks passed.) Tags lcd-l1-pass, lcd-l2-pass.
 - L3 look (emulator LCD=1, no change): TTY.Mod closes only text viewers (TTY.Mod:73), so graphic viewers stay.
   Hilbert.Draw (docs/l3_emu_hilbert.png); Hilbert.Draw, Sierpinski.Draw, Checkers.Open stack in the user track
   (docs/l3_emu_three.png); Stars.Open, Stars.Run animate (docs/l3_emu_stars.png). Graphic viewers cannot be closed
-  from the TTY (System.Close needs a real viewer in Oberon.Par): PROPOSED TTY.Clear (closes the user track's
-  viewers), needs a new disk image on the card.
+  from the TTY? Emulator: System.Close closes the viewer under Oberon's pointer, which stays at (0, 0) without a
+  mouse = the lowest viewer of the user track; 4 x System.Close after 4 viewers (Stars running) leave the track
+  empty, Hilbert.Draw is then full size; an extra System.Close on the empty track does nothing; System.CloseTrack
+  does nothing (the base track). So TTY.Clear (proposed) is not needed: dropped.
   Board (PuTTY after o, photo docs/l3_board_drawings.jpg, taken turned 90 degrees): Hilbert.Draw, Stars.Open +
   Stars.Run, Sierpinski.Draw, Checkers.Open: four viewers stacked in the user track as in the emulator, System.Log
   and System.Tool in the system track. L3's goal (drawings typed at the TTY on the panel) reached without a change.
