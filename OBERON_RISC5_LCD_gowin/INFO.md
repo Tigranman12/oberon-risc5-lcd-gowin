@@ -16,3 +16,8 @@
   ~/workspace/GARDMAN/dist/OBERON_RISC5_LCD_gowin-20261109-f40b859.tar.gz (not in git: the project, Wirth's RTL,
   tools/r5, prebuilt r5_tang.fs / Oberon.dsk / prom.mem with SHA256SUMS, extras/runlog; README.md = DEMO.md);
   tested from a fresh unpack. Push to origin: by the user (AGENTS.md).
+- 2026-11-09: user: "is fractal here exists" -> "yes do it" -> oberon/Mandel.Mod (Mandel.Draw: the Mandelbrot set,
+  compiled and computed on the board), on the disk image as a source; emulator-verified (docs/mandel_emu_lcd.png).
+- 2026-11-09: user: "create public link for this project, I will give other Claude remote control to do it on same
+  other gowin" -> the standalone repo becomes PUBLIC: https://github.com/Tigranman12/oberon-risc5-lcd-gowin
+  (DEMO.md A2: plain git clone, no login). Creating and pushing it: by the user (AGENTS.md).

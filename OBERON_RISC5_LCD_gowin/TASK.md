@@ -53,6 +53,13 @@
   Board (PuTTY after o, photo docs/l3_board_drawings.jpg, taken turned 90 degrees): Hilbert.Draw, Stars.Open +
   Stars.Run, Sierpinski.Draw, Checkers.Open: four viewers stacked in the user track as in the emulator, System.Log
   and System.Tool in the system track. L3's goal (drawings typed at the TTY on the panel) reached without a change.
+- Mandelbrot (user: "is fractal here exists" -> "yes do it"): oberon/Mandel.Mod (Mandel.Draw: a viewer as Hilbert's,
+  z := z*z + c in REAL up to 32 steps; white = the set and the odd escape counts > 2), installed as source.
+  tools/mkdisk.sh -> build/oberon/Oberon.dsk 1000448 bytes (1954 blocks: 80002H..807A3H), 138 files.
+  Emulator LCD=1: ORP.Compile Mandel.Mod/s 'compiling Mandel new symbol file 364 0 D1E11321', Mandel.Draw draws
+  the set (docs/mandel_emu_lcd.png). o9emu.sh lcd 9/9, o9emu.sh 9/9 with the new image. Estimate on the board:
+  786606 iterations x 100-150 clocks = 5-8 s. Needs: the new image on the card (sdwrite.py / dd), board check.
+
 ## Next
 1. Evidence for L1r + L2 (one Gowin build, one run_rf.sh): run_rf.sh 49/49; build: Fmax, 0 violations;
    board: lcdtest.s (square at the bottom-left with the cable on top), then o: Oberon's screen on the panel.

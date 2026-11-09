@@ -15,7 +15,8 @@ sources. Part C lists the problems seen so far and their fixes.
 3. `ORP.Compile Hello.Mod/s`, `Hello.Run`: Oberon's compiler compiles a program on the FPGA; it prints
    `1+..+100 = 5050` (in the terminal and in System.Log on the LCD).
 4. `Hilbert.Draw`, `Sierpinski.Draw`, `Checkers.Open`, `Stars.Open` + `Stars.Run`: Oberon's graphics programs
-   draw on the LCD (the stars move).
+   draw on the LCD (the stars move). `ORP.Compile Mandel.Mod/s`, `Mandel.Draw`: the Mandelbrot set, compiled and
+   computed on the FPGA.
 5. Files compiled on the board are stored on the SD card and are still there after a power cycle.
 
 Photos of the result: `OBERON_RISC5_LCD_gowin/docs/l2_board_oberon.jpg`, `docs/l3_board_drawings.jpg`.
@@ -39,7 +40,7 @@ picture is upside down with your mounting, see C6.
 gardman/
   README.md                    this guide (= OBERON_RISC5_LCD_gowin/DEMO.md)
   prebuilt/r5_tang.fs          FPGA bitstream (built and tested on the board)
-  prebuilt/Oberon.dsk          Oberon disk image (996352 bytes) for the SD card
+  prebuilt/Oberon.dsk          Oberon disk image (1000448 bytes) for the SD card
   prebuilt/prom.mem            the monitor ROM inside that bitstream (needed only to rebuild)
   prebuilt/SHA256SUMS          checksums of the three files
   extras/runlog                optional helper: runs a command and saves its output under logs/
@@ -76,12 +77,12 @@ ls /tools/Gowin/Programmer/bin/programmer_cli      # must exist
 
 ### A2. Get the files and check them
 
-From the private GitHub repository (the folder name `gardman` keeps the paths of this guide):
+From the public GitHub repository https://github.com/Tigranman12/oberon-risc5-lcd-gowin (no login needed; the
+folder name `gardman` keeps the paths of this guide):
 
 ```
 mkdir -p ~/oberon && cd ~/oberon
-gh auth login                                       # once per PC, if not logged in (or use an SSH key)
-gh repo clone <github-user>/oberon-risc5-lcd-gowin gardman
+git clone https://github.com/Tigranman12/oberon-risc5-lcd-gowin.git gardman
 cd gardman
 sha256sum -c prebuilt/SHA256SUMS                    # three lines "OK"
 ```
@@ -146,8 +147,8 @@ cd OBERON_RISC5_LCD_gowin
 python3 tools/sdwrite.py ../prebuilt/Oberon.dsk          # --port /dev/ttyUSBn if not ttyUSB1
 ```
 
-Expected: progress lines up to `1946/1946 blocks`, then `ok` and
-`sdwrite: blocks 80002..8079B written and read back`. Every block is read back and compared by the board. If it
+Expected: progress lines up to `1954/1954 blocks`, then `ok` and
+`sdwrite: blocks 80002..807A3 written and read back`. Every block is read back and compared by the board. If it
 stops with an error, it prints `go on with --skip K`: run the same command with that option. A card that accepts
 writes but does not keep them makes this fail at the first block: use another card.
 
@@ -212,6 +213,7 @@ was made in.)
 | `Sierpinski.Draw` | a Sierpinski curve |
 | `Checkers.Open` | a checkerboard |
 | `Stars.Open` then `Stars.Run` | moving stars; `Stars.Stop` stops them |
+| `ORP.Compile Mandel.Mod/s` then `Mandel.Draw` | the Mandelbrot set, computed with the CPU's floating-point unit (about 5-10 s; the set white, bands around it) |
 | `System.Close` | closes the lowest viewer of the left track (see below) |
 
 Each drawing opens a viewer in the left track; the track is shared, so later viewers are smaller.
@@ -296,7 +298,8 @@ the word at 400000H + y * 3CH + (x DIV 32) * 4 (y = 0 is the bottom line), e.g. 
 ### B5. The Oberon disk image (advanced)
 
 `prebuilt/Oberon.dsk` was made by `tools/mkdisk.sh` with Peter De Wachter's project-norebo (and fonts from his
-oberon-risc-emu disk), plus `oberon/TTY.Mod` and `oberon/Hello.Mod`. Rebuilding it needs those two repositories
+oberon-risc-emu disk), plus `oberon/TTY.Mod` (compiled into the image), `oberon/Hello.Mod` and `oberon/Mandel.Mod` (sources, compiled
+on the board). Rebuilding it needs those two repositories
 under `~/workspace/ext/` (see the header of `tools/mkdisk.sh`). `tools/o9emu.sh lcd` runs the image in the
 emulator with the board's 480 x 272 screen and checks the TTY session (9/9).
 
