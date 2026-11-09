@@ -1,0 +1,2 @@
+# OBERON_RISC5_LCD_gowin: the boot ROM copied for synthesis (build.tcl)
+gowin/prom.mem

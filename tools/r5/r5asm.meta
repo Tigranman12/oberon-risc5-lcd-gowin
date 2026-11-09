@@ -1,0 +1,49 @@
+.SYNTAX PROG
+
+PROG = .OUT('# RISC5 program, translated by tools/r5/r5asm.meta (META II); run by tools/r5/r5meta.py')
+       $ STMT .OUT('END()') .,
+
+STMT = 'PUTS' .STRING .OUT('PUTS(' * ')') /
+       INSTR /
+       .ID .OUT('LBL("' * '")') ':' .,
+
+INSTR = REGOP / MEMOP / BRANCH .,
+
+REGOP = 'GETH' .OUT('OP("GETH")') REG /
+        ( 'MOVH' .OUT('OP("MOVH")') / 'MOV' .OUT('OP("MOV")') ) REG ',' OPND /
+        ( 'LSL' .OUT('OP("LSL")') / 'ASR' .OUT('OP("ASR")') / 'ROR' .OUT('OP("ROR")') /
+          'AND' .OUT('OP("AND")') / 'ANN' .OUT('OP("ANN")') / 'IOR' .OUT('OP("IOR")') /
+          'XOR' .OUT('OP("XOR")') / 'ADD' .OUT('OP("ADD")') / 'SUB' .OUT('OP("SUB")') /
+          'MUL' .OUT('OP("MUL")') / 'DIV' .OUT('OP("DIV")') / 'FAD' .OUT('OP("FAD")') /
+          'FSB' .OUT('OP("FSB")') / 'FML' .OUT('OP("FML")') / 'FDV' .OUT('OP("FDV")') /
+          'FLT' .OUT('OP("FLT")') / 'FLR' .OUT('OP("FLR")') )
+        REG ',' REG ',' OPND .,
+
+MEMOP = ( 'LDR' .OUT('OP("LDR")') / 'LDB' .OUT('OP("LDB")') /
+          'STR' .OUT('OP("STR")') / 'STB' .OUT('OP("STB")') )
+        REG ',' REG ',' IMM .,
+
+BRANCH = ( 'BLMI' .OUT('OP("BLMI")') / 'BLEQ' .OUT('OP("BLEQ")') / 'BLCS' .OUT('OP("BLCS")') /
+           'BLVS' .OUT('OP("BLVS")') / 'BLLS' .OUT('OP("BLLS")') / 'BLLT' .OUT('OP("BLLT")') /
+           'BLLE' .OUT('OP("BLLE")') / 'BLPL' .OUT('OP("BLPL")') / 'BLNE' .OUT('OP("BLNE")') /
+           'BLCC' .OUT('OP("BLCC")') / 'BLVC' .OUT('OP("BLVC")') / 'BLHI' .OUT('OP("BLHI")') /
+           'BLGE' .OUT('OP("BLGE")') / 'BLGT' .OUT('OP("BLGT")') /
+           'BMI' .OUT('OP("BMI")') / 'BEQ' .OUT('OP("BEQ")') / 'BCS' .OUT('OP("BCS")') /
+           'BVS' .OUT('OP("BVS")') / 'BLS' .OUT('OP("BLS")') / 'BLT' .OUT('OP("BLT")') /
+           'BLE' .OUT('OP("BLE")') / 'BPL' .OUT('OP("BPL")') / 'BNE' .OUT('OP("BNE")') /
+           'BCC' .OUT('OP("BCC")') / 'BVC' .OUT('OP("BVC")') / 'BHI' .OUT('OP("BHI")') /
+           'BGE' .OUT('OP("BGE")') / 'BGT' .OUT('OP("BGT")') /
+           'BL' .OUT('OP("BL")') / 'B' .OUT('OP("B")') )
+         TARGET .,
+
+TARGET = REG / .ID .OUT('LAB("' * '")') .,
+
+REG = 'R' .NUMBER .OUT('REG(' * ')') .,
+
+OPND = REG / IMM .,
+
+IMM = .NUMBER .OUT('NUM(' * ')') /
+      '-' .NUMBER .OUT('NUM(-' * ')') /
+      .STRING .OUT('CHR(' * ')') .,
+
+.END

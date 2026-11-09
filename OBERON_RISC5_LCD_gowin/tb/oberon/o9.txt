@@ -1,0 +1,7 @@
+System.Directory *.Mod
+ORP.Compile Hello.Mod/s
+Hello.Run
+Nope.Run
+Hello.Trap
+Hello.Run
+System.ShowModules

@@ -1,0 +1,47 @@
+@@grammar :: RISC5
+@@nameguard :: True
+@@eol_comments :: /;[^\n]*/
+
+# The RISC5 assembler of OBERON_RISC5 as a TatSu (PEG) grammar. Same language as tools/r5/r5asm.py and
+# tools/r5/r5asm.meta; semantic actions in tools/r5/r5tatsu.py. PEG backtracks, so labels may have any name:
+# "MOV R1, 2" first tries  label = ident ':'  ("MOV" then ':' fails) and then the instruction rules.
+# Regex groups are non-capturing (?:...): with a capturing group TatSu returns only the group.
+# nameguard: the token 'MOV' does not match the start of "MOVH", and 'B' is a regex with \b.
+
+start = stmts:{ stmt } $ ;
+
+stmt = label | puts | instr ;
+
+label = name:ident ':' ;
+
+puts = 'PUTS' text:string ;
+
+instr = geth | regop | memop | branch ;
+
+geth = op:'GETH' a:reg ;
+
+regop
+    = op:('MOVH' | 'MOV') a:reg ',' c:opnd
+    | op:alu a:reg ',' b:reg ',' c:opnd
+    ;
+
+alu = 'LSL' | 'ASR' | 'ROR' | 'AND' | 'ANN' | 'IOR' | 'XOR' | 'ADD'
+    | 'SUB' | 'MUL' | 'DIV' | 'FAD' | 'FSB' | 'FML' | 'FDV' | 'FLT' | 'FLR' ;
+
+memop = op:('LDR' | 'LDB' | 'STR' | 'STB') a:reg ',' b:reg ',' c:imm ;
+
+branch = op:/BL?(?:MI|EQ|CS|VS|LS|LT|LE|PL|NE|CC|VC|HI|GE|GT)?\b/ t:target ;
+
+target = reg | ident ;
+
+opnd = reg | imm ;
+
+reg = /R(?:1[0-5]|[0-9])\b/ ;
+
+imm = /-?0[xX][0-9a-fA-F]+\b/ | /-?[0-9]+\b/ | char ;
+
+char = /'.'/ ;
+
+string = /'[^']*'/ | /"(?:[^"\\]|\\.)*"/ ;
+
+ident = /[A-Za-z_][A-Za-z0-9_]*/ ;

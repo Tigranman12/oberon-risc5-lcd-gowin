@@ -1,0 +1,29 @@
+#!/bin/bash
+# runlog NAME COMMAND [ARGS...]: run COMMAND, show its output and save the run for the agent ("logs ready").
+# Saves <repo>/logs/<YYYYmmdd-HHMMSS>-NAME/ (./logs/ outside a git repo):
+#   meta.txt    command, folder, start, git revision + changed files, end, exit code
+#   output.log  stdout + stderr of the command
+# stdin goes to the command (e.g. runlog x ssh root@host sh -s < script.sh). Exit code = the command's.
+[ $# -ge 2 ] || { echo "usage: runlog NAME COMMAND [ARGS...]"; exit 2; }
+name=$1; shift
+root=$(git rev-parse --show-toplevel 2>/dev/null) || root=$PWD
+dir="$root/logs/$(date +%Y%m%d-%H%M%S)-$name"
+mkdir -p "$dir" || exit 1
+{
+    echo "command: $* "
+    echo "folder:  $PWD"
+    echo "start:   $(date '+%F %T')"
+    if git rev-parse --git-dir >/dev/null 2>&1; then
+        changes=$(git -C "$root" status --short)
+        n=$( [ -n "$changes" ] && echo "$changes" | wc -l || echo 0)
+        echo "git:     $(git rev-parse --short HEAD 2>/dev/null) on $(git branch --show-current 2>/dev/null), $n changed files"
+        [ -n "$changes" ] && echo "$changes" | sed 's/^/         /'
+    else
+        echo "git:     not a git repo"
+    fi
+} > "$dir/meta.txt"
+"$@" 2>&1 | tee "$dir/output.log"
+rc=${PIPESTATUS[0]}
+{ echo "end:     $(date '+%F %T')"; echo "exit:    $rc"; } >> "$dir/meta.txt"
+echo ">> saved: ${dir#$PWD/}  (exit $rc, ERROR/FAIL lines: $(grep -ciE 'error|fail' "$dir/output.log"))"
+exit $rc

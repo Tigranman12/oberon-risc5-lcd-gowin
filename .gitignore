@@ -1,0 +1,7 @@
+# outputs, never committed: simulation and build products, run logs, Gowin's implementation folder
+**/build/
+**/logs/
+**/gowin/impl/
+**/gowin/prom.mem
+*.vcd
+__pycache__/
